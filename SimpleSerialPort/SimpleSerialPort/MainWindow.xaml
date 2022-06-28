@@ -1,0 +1,99 @@
+﻿<Window x:Class="SimpleSerialPort.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SimpleSerialPort"
+        mc:Ignorable="d"
+        Title="SSP" Height="Auto" Width="Auto" SizeToContent="WidthAndHeight">
+    <Grid Height="452" Width="800" Margin="0,0,0,3">
+        <GroupBox Header="Configuration" Margin="10,0,10,391">
+            <Grid Height="44">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="347*"/>
+                    <ColumnDefinition Width="421*"/>
+                </Grid.ColumnDefinitions>
+                <Label Content="Port:" Margin="0,4,312,17"></Label>
+                <ComboBox Name="PortBox" PreviewMouseLeftButtonDown="RefreshPorts" VerticalAlignment="Top" Margin="35,5,250,0" Height="25"></ComboBox>
+
+                <Label Content="Baud:" Margin="95,4,205,10"></Label>
+                <ComboBox Name="BaudBox" VerticalAlignment="Top" Margin="132,5,141,0" Height="25">
+                    <ComboBoxItem>100</ComboBoxItem>
+                    <ComboBoxItem>300</ComboBoxItem>
+                    <ComboBoxItem>600</ComboBoxItem>
+                    <ComboBoxItem>1200</ComboBoxItem>
+                    <ComboBoxItem>2400</ComboBoxItem>
+                    <ComboBoxItem>4800</ComboBoxItem>
+                    <ComboBoxItem>9600</ComboBoxItem>
+                    <ComboBoxItem>14400</ComboBoxItem>
+                    <ComboBoxItem  IsSelected="True">19200</ComboBoxItem>
+                    <ComboBoxItem>38400</ComboBoxItem>
+                    <ComboBoxItem>56000</ComboBoxItem>
+                    <ComboBoxItem>57600</ComboBoxItem>
+                    <ComboBoxItem>115200</ComboBoxItem>
+                    <ComboBoxItem>128000</ComboBoxItem>
+                    <ComboBoxItem>256000</ComboBoxItem>
+                </ComboBox>
+
+                <Label Content="Data bits:" Margin="206,4,77,10"></Label>
+                <ComboBox Name="DatabitsBox" VerticalAlignment="Top" Margin="264,5,38,0" Height="25">
+                    <ComboBoxItem>5</ComboBoxItem>
+                    <ComboBoxItem>6</ComboBoxItem>
+                    <ComboBoxItem>7</ComboBoxItem>
+                    <ComboBoxItem  IsSelected="True">8</ComboBoxItem>
+                </ComboBox>
+
+                <Label Content="Parity:" Margin="309,4,417,10" Grid.ColumnSpan="2"/>
+                <ComboBox x:Name="ParityBox" VerticalAlignment="Top" Margin="0,5,358,0" Height="25" Grid.Column="1">
+                    <ComboBoxItem IsSelected="True" Content="None"/>
+                    <ComboBoxItem Content="Odd"/>
+                    <ComboBoxItem Content="Even"/>
+                    <ComboBoxItem Content="Mark"/>
+                    <ComboBoxItem Content="Space"/>
+                </ComboBox>
+
+                <Label Content="Stop Bits:" Margin="63,4,299,10" Grid.Column="1"/>
+                <ComboBox x:Name="StopbitsBox" VerticalAlignment="Top" Margin="122,5,241,0" Height="25" Grid.Column="1">
+                    <ComboBoxItem Content="None"/>
+                    <ComboBoxItem IsSelected="True" Content="One"/>
+                    <ComboBoxItem Content="Two"/>
+                    <ComboBoxItem Content="OnePointFive"/>
+                </ComboBox>
+
+                <Label Content="Handshake:" Margin="180,4,168,10" Grid.Column="1"/>
+                <ComboBox x:Name="HandshakeBox" VerticalAlignment="Top" Margin="249,5,104,0" Height="25" Grid.Column="1">
+                    <ComboBoxItem IsSelected="True" Content="None"/>
+                    <ComboBoxItem Content="XOnXOff"/>
+                    <ComboBoxItem Content="RequestToSend"/>
+                    <ComboBoxItem Content="RequestToSendXOnXOff"/>
+                </ComboBox>
+
+                <Button Content="Connect" Name="DebugConnectBtn" VerticalAlignment="Top" Margin="320,5,30,0" Click="UART_Connect_Click" Height="25" Grid.Column="1"></Button>
+
+                <Ellipse Name="DebugStatus" Fill="Red" Margin="396,6,4,17" RenderTransformOrigin="0.5,0.5" Grid.Column="1" >
+                    <Ellipse.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform ScaleX="-1"/>
+                            <SkewTransform/>
+                            <RotateTransform/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </Ellipse.RenderTransform>
+                    <Ellipse.Effect>
+                        <BlurEffect Radius="3"/>
+                    </Ellipse.Effect>
+                </Ellipse>
+
+
+            </Grid>
+        </GroupBox>
+
+        <RichTextBox x:Name="rxBox" Margin="10,66,10,37"></RichTextBox>
+        <TextBox x:Name="txBox" Margin="10,420,220,3" KeyUp="OnDebugEnter"></TextBox>
+
+        <Button Content="Clear Text" x:Name="ClearText_Btn" VerticalAlignment="Bottom" Margin="690,0,10,3" Height="29" Click="ClearText_Click"/>
+        <Button  x:Name="btn_sendFile" VerticalAlignment="Bottom" Click="SendFile" Margin="585,0,115,3" Height="29">Send File</Button>
+
+
+    </Grid>
+</Window>
