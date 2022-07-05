@@ -1,0 +1,116 @@
+﻿<Window x:Class="SimpleSerialPort.SettingWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SimpleSerialPort"
+        mc:Ignorable="d"
+        Title="Settings" Height="Auto" Width="Auto" SizeToContent="WidthAndHeight">
+    <Grid Height="228" Width="320">
+        <GroupBox Header="Configuration" Margin="10,0,155,34" >
+            <Grid Height="188">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="42*"/>
+                    <ColumnDefinition Width="101*"/>
+                    <ColumnDefinition Width="0*"/>
+                </Grid.ColumnDefinitions>
+
+                <Label Content="Port" Margin="-1,5,83,160" Grid.ColumnSpan="2"/>
+                <ComboBox Name="PortBox" PreviewMouseLeftButtonDown="RefreshPorts" VerticalAlignment="Top" Height="21" Margin="30,6,3,0" Grid.Column="1"/>
+
+                <Label Content="Baud" Margin="-1,31,83,130" Grid.ColumnSpan="2"></Label>
+                <ComboBox Name="BaudBox"  VerticalAlignment="Top" Height="21" Margin="30,33,3,0" Grid.Column="1">
+                    <ComboBoxItem>100</ComboBoxItem>
+                    <ComboBoxItem>300</ComboBoxItem>
+                    <ComboBoxItem>600</ComboBoxItem>
+                    <ComboBoxItem>1200</ComboBoxItem>
+                    <ComboBoxItem>2400</ComboBoxItem>
+                    <ComboBoxItem>4800</ComboBoxItem>
+                    <ComboBoxItem>9600</ComboBoxItem>
+                    <ComboBoxItem>14400</ComboBoxItem>
+                    <ComboBoxItem  IsSelected="True">19200</ComboBoxItem>
+                    <ComboBoxItem>38400</ComboBoxItem>
+                    <ComboBoxItem>56000</ComboBoxItem>
+                    <ComboBoxItem>57600</ComboBoxItem>
+                    <ComboBoxItem>115200</ComboBoxItem>
+                    <ComboBoxItem>128000</ComboBoxItem>
+                    <ComboBoxItem>256000</ComboBoxItem>
+                </ComboBox>
+
+                <Label Content="Data bits" Margin="-1,58,83,100" Grid.ColumnSpan="2"></Label>
+                <ComboBox Name="DatabitsBox" VerticalAlignment="Top"  Height="22" Margin="30,60,3,0" Grid.Column="1">
+                    <ComboBoxItem>5</ComboBoxItem>
+                    <ComboBoxItem>6</ComboBoxItem>
+                    <ComboBoxItem>7</ComboBoxItem>
+                    <ComboBoxItem  IsSelected="True">8</ComboBoxItem>
+                </ComboBox>
+
+                <Label Content="Parity" Margin="-1,87,83,71" Grid.ColumnSpan="2"/>
+                <ComboBox x:Name="ParityBox" VerticalAlignment="Top" Height="21" Margin="30,88,3,0" Grid.Column="1">
+                    <ComboBoxItem IsSelected="True" Content="None"/>
+                    <ComboBoxItem Content="Odd"/>
+                    <ComboBoxItem Content="Even"/>
+                    <ComboBoxItem Content="Mark"/>
+                    <ComboBoxItem Content="Space"/>
+                </ComboBox>
+
+                <Label Content="Stop Bits" Margin="-1,115,83,45" Grid.ColumnSpan="2"/>
+                <ComboBox x:Name="StopbitsBox" VerticalAlignment="Top" Height="22" Margin="30,116,3,0" Grid.Column="1">
+                    <ComboBoxItem Content="None"/>
+                    <ComboBoxItem IsSelected="True" Content="One"/>
+                    <ComboBoxItem Content="Two"/>
+                    <ComboBoxItem Content="OnePointFive"/>
+                </ComboBox>
+
+                <Label Content="Handshake" Margin="-1,144,71,19" Grid.ColumnSpan="2"/>
+                <ComboBox x:Name="HandshakeBox" VerticalAlignment="Top" Height="22" Margin="30,145,3,0" Grid.Column="1">
+                    <ComboBoxItem  IsSelected="True" Content="None"/>
+                    <ComboBoxItem Content="XOnXOff"/>
+                    <ComboBoxItem Content="RequestToSend"/>
+                    <ComboBoxItem Content="RequestToSendXOnXOff"/>
+                </ComboBox>
+
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="Options" Margin="170,0,10,34" >
+            <Grid>
+                <RadioButton GroupName="opts" Height="18" Margin="0,7,0,142" FontSize="11" IsChecked="True">
+                    Append Nothing
+                </RadioButton>
+                <RadioButton GroupName="opts" Height="18" Margin="0,25,0,124" FontSize="11">
+                    Append CR
+                </RadioButton>
+                <RadioButton GroupName="opts" Height="18" Margin="0,43,0,106" FontSize="11">
+                    Append LF
+                </RadioButton>
+                <RadioButton GroupName="opts" Height="18" Margin="0,61,0,88" FontSize="11">
+                    Append CR-LF
+                </RadioButton>
+
+                <CheckBox FontSize="11" Margin="0,84,0,67" FontWeight="Normal" VerticalContentAlignment="Center">
+                    <TextBlock Text="Hex Output" VerticalAlignment="Center" />
+                </CheckBox>
+                <CheckBox FontSize="11" Margin="0,100,0,51" FontWeight="Normal" VerticalContentAlignment="Center">
+                    <TextBlock Text="Monospaced Font" VerticalAlignment="Center" />
+                </CheckBox>
+                <CheckBox FontSize="11" Margin="0,116,0,35" FontWeight="Normal" VerticalContentAlignment="Center">
+                    <TextBlock Text="Stay on top" VerticalAlignment="Center" />
+                </CheckBox>
+                <CheckBox FontSize="11" Margin="0,132,0,19" FontWeight="Normal" VerticalContentAlignment="Center" IsChecked="True">
+                    <TextBlock Text="Local echo" VerticalAlignment="Center" />
+                </CheckBox>
+                <CheckBox FontSize="11" Margin="0,148,0,3" FontWeight="Normal" VerticalContentAlignment="Center">
+                    <TextBlock Text="Base64 Encoding" VerticalAlignment="Center" />
+                </CheckBox>
+            </Grid>
+
+        </GroupBox>
+
+        <Button Margin="10,201,270,6" >Log</Button>
+
+        <TextBox Margin="50,201,155,6" IsEnabled="False"></TextBox>
+        <Button Margin="172,201,83,6" Click="OK_Btn_Click">OK</Button>
+        <Button Margin="245,201,10,6">Cancel</Button>
+
+    </Grid>
+</Window>

@@ -20,7 +20,9 @@ namespace SimpleSerialPort
         readonly string LogPath = AppDomain.CurrentDomain.BaseDirectory + "log";
         readonly string cmdLogPath = AppDomain.CurrentDomain.BaseDirectory + "/log/commands";
 
-        private SerialPort ThePort = new SerialPort();
+        private SettingWindow settingWindow;
+
+        public SerialPort ThePort = new SerialPort();
         byte[] rxBuffer;
         uint rxBufferCount;
         bool saveLog = false;
@@ -33,17 +35,6 @@ namespace SimpleSerialPort
             InitializeComponent();
         }
 
-        public void RefreshPorts(object sender, RoutedEventArgs e)
-        {
-            PortBox.Items.Clear();                              //Clears existing ports
-            string[] portNames = SerialPort.GetPortNames();     // Reads all available comPorts
-            foreach (var portName in portNames)
-            {
-                PortBox.Items.Add(portName);                   // Adds Ports to combobox
-            }
-            //DebugBox.SelectedIndex = 0;
-        }
-
         private void UART_Connect_Click(object sender, RoutedEventArgs e)
         {
             if (ThePort.IsOpen)
@@ -54,12 +45,13 @@ namespace SimpleSerialPort
                 return;
             }
 
-            ThePort.PortName = PortBox.Text;
-            ThePort.BaudRate = 19200;
-            ThePort.Handshake = Handshake.None;
-            ThePort.Parity = Parity.None;
-            ThePort.DataBits = 8;
-            ThePort.StopBits = StopBits.One;
+            ThePort.PortName = settingWindow.PortBox.Text;
+            ThePort.BaudRate = Int32.Parse(settingWindow.BaudBox.Text);
+            ThePort.Handshake = (Handshake)Enum.Parse(typeof(Handshake), settingWindow.HandshakeBox.Text);
+            ThePort.Parity = (Parity) Enum.Parse(typeof(Parity), settingWindow.ParityBox.Text);
+            ThePort.DataBits = Int32.Parse(settingWindow.DatabitsBox.Text);
+            ThePort.StopBits = (StopBits)Enum.Parse(typeof(StopBits), settingWindow.StopbitsBox.Text);
+
             ThePort.ReadBufferSize = 20971520;
             ThePort.ReadTimeout = 200;
             ThePort.WriteTimeout = 150;
@@ -82,9 +74,14 @@ namespace SimpleSerialPort
                 DebugStatus.Fill = Brushes.Green;
                 DebugConnectBtn.Content = "Disconnect";
             }
-            else MessageBox.Show("Could not connect to " + PortBox.Text);
+            else MessageBox.Show("Could not connect to " + settingWindow.PortBox.Text);
         }
 
+        private void Settings_Click(object sender, RoutedEventArgs e)
+        {
+            settingWindow = new SettingWindow();
+            settingWindow.Show();
+        }
         private void ClearText_Click(object sender, RoutedEventArgs e)
         {
             rxBox.Document.Blocks.Clear();
