@@ -29,7 +29,7 @@
 
 
         <RichTextBox x:Name="rxBox" Margin="0,47,0,37"></RichTextBox>
-        <TextBox x:Name="txBox" Margin="10,420,220,3"></TextBox>
+        <TextBox x:Name="txBox" Margin="10,420,220,3" KeyUp="OnDebugEnter"></TextBox>
 
         <Button Content="Clear Text" x:Name="ClearText_Btn" VerticalAlignment="Bottom" Margin="690,0,10,3" Height="29" Click="ClearText_Click"/>
         <Button  x:Name="btn_sendFile" VerticalAlignment="Bottom" Click="SendFile" Margin="585,0,115,3" Height="29">Send File</Button>
