@@ -26,6 +26,7 @@ namespace SimpleSerialPort
         public SettingWindow()
         {
             InitializeComponent();
+            //TODO: Create a ini file and receive data from there.
         }
 
         public void RefreshPorts(object sender, RoutedEventArgs e)
@@ -53,6 +54,28 @@ namespace SimpleSerialPort
             this.Close();
         }
 
-        
+        private void Cancel_Btn_Click(object sender, RoutedEventArgs e)
+        {
+            //TODO: Take a snapshot of every value during initialization, and restore them upon clicking Cancel
+            this.Close();
+        }
+
+        private void LogBtnClick(object sender, RoutedEventArgs e)
+        {
+            using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
+            {
+                System.Windows.Forms.DialogResult result = dialog.ShowDialog();
+                logpath.Text = dialog.SelectedPath;
+                logpath.IsEnabled = true;
+            }
+
+        }
+
+        private void LogPathUp(object sender, RoutedEventArgs e)
+        {
+            if(logpath.Text == "")
+                logpath.IsEnabled = false;
+        }
+
     }
 }

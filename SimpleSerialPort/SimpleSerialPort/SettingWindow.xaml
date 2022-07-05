@@ -73,44 +73,44 @@
             </Grid>
         </GroupBox>
         <GroupBox Header="Options" Margin="170,0,10,34" >
-            <Grid>
-                <RadioButton GroupName="opts" Height="18" Margin="0,7,0,142" FontSize="11" IsChecked="True">
+            <Grid x:Name="optsGroup">
+                <RadioButton GroupName="opts" Height="18" Margin="0,7,0,142" FontSize="11">
                     Append Nothing
                 </RadioButton>
                 <RadioButton GroupName="opts" Height="18" Margin="0,25,0,124" FontSize="11">
                     Append CR
                 </RadioButton>
-                <RadioButton GroupName="opts" Height="18" Margin="0,43,0,106" FontSize="11">
+                <RadioButton GroupName="opts" Height="18" Margin="0,43,0,106" FontSize="11" IsChecked="True">
                     Append LF
                 </RadioButton>
                 <RadioButton GroupName="opts" Height="18" Margin="0,61,0,88" FontSize="11">
                     Append CR-LF
                 </RadioButton>
 
-                <CheckBox FontSize="11" Margin="0,84,0,67" FontWeight="Normal" VerticalContentAlignment="Center">
+                <CheckBox x:Name="hexcheck" FontSize="11" Margin="0,84,0,67" FontWeight="Normal" VerticalContentAlignment="Center">
                     <TextBlock Text="Hex Output" VerticalAlignment="Center" />
                 </CheckBox>
-                <CheckBox FontSize="11" Margin="0,100,0,51" FontWeight="Normal" VerticalContentAlignment="Center">
+                <CheckBox x:Name="monospacecheck" FontSize="11" Margin="0,100,0,51" FontWeight="Normal" VerticalContentAlignment="Center">
                     <TextBlock Text="Monospaced Font" VerticalAlignment="Center" />
                 </CheckBox>
-                <CheckBox FontSize="11" Margin="0,116,0,35" FontWeight="Normal" VerticalContentAlignment="Center">
+                <CheckBox x:Name="ontopcheck" FontSize="11" Margin="0,116,0,35" FontWeight="Normal" VerticalContentAlignment="Center">
                     <TextBlock Text="Stay on top" VerticalAlignment="Center" />
                 </CheckBox>
-                <CheckBox FontSize="11" Margin="0,132,0,19" FontWeight="Normal" VerticalContentAlignment="Center" IsChecked="True">
+                <CheckBox x:Name="echocheck" FontSize="11" Margin="0,132,0,19" FontWeight="Normal" VerticalContentAlignment="Center" IsChecked="True">
                     <TextBlock Text="Local echo" VerticalAlignment="Center" />
                 </CheckBox>
-                <CheckBox FontSize="11" Margin="0,148,0,3" FontWeight="Normal" VerticalContentAlignment="Center">
+                <CheckBox x:Name="b64check" FontSize="11" Margin="0,148,0,3" FontWeight="Normal" VerticalContentAlignment="Center">
                     <TextBlock Text="Base64 Encoding" VerticalAlignment="Center" />
                 </CheckBox>
             </Grid>
 
         </GroupBox>
 
-        <Button Margin="10,201,270,6" >Log</Button>
+        <Button Margin="10,201,270,6" Click="LogBtnClick" >Log</Button>
 
-        <TextBox Margin="50,201,155,6" IsEnabled="False"></TextBox>
+        <TextBox x:Name="logpath" Margin="50,201,155,6" IsEnabled="False" KeyUp="LogPathUp"></TextBox>
         <Button Margin="172,201,83,6" Click="OK_Btn_Click">OK</Button>
-        <Button Margin="245,201,10,6">Cancel</Button>
+        <Button Margin="245,201,10,6" Click="Cancel_Btn_Click">Cancel</Button>
 
     </Grid>
 </Window>

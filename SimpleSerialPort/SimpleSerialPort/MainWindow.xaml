@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SimpleSerialPort"
         mc:Ignorable="d"
-        Title="SSP" Height="Auto" Width="Auto" SizeToContent="WidthAndHeight">
+        Title="SSP" Height="Auto" Width="Auto" MaxWidth="840" MaxHeight="500" SizeToContent="WidthAndHeight">
     <Grid Height="452" Width="800" Margin="0,0,0,3" Background="#FFF3F3F3">
 
         <TextBox x:Name="ConnectionBox" IsEnabled="False" Margin="10,9,435,411" Padding="40, 8, 0, 0">Not Connected</TextBox>

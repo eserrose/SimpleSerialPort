@@ -9,6 +9,7 @@ using System.Windows.Input;
 using Microsoft.Win32;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Linq;
 
 namespace SimpleSerialPort
 {
@@ -17,17 +18,14 @@ namespace SimpleSerialPort
     /// </summary>
     public partial class MainWindow : Window
     {
-        readonly string LogPath = AppDomain.CurrentDomain.BaseDirectory + "log";
-        readonly string cmdLogPath = AppDomain.CurrentDomain.BaseDirectory + "/log/commands";
+        readonly private string cmdLogPath = AppDomain.CurrentDomain.BaseDirectory + "/log/commands";
+        public string LogPath = AppDomain.CurrentDomain.BaseDirectory + "log";
 
         private SettingWindow settingWindow;
 
         public SerialPort ThePort = new SerialPort();
         byte[] rxBuffer;
-        uint rxBufferCount;
-        bool saveLog = false;
-        bool encodeB64 = false;
-        bool enableScroll = true;
+        bool enableScroll = true; //todo: add this functionality
         int readCtr = 0;
 
         public MainWindow()
@@ -58,7 +56,6 @@ namespace SimpleSerialPort
             ThePort.DataReceived += new SerialDataReceivedEventHandler(DataReceivedHandler);
 
             rxBuffer = new byte[5000000];
-            rxBufferCount = 0;
 
             try
             {
@@ -91,33 +88,78 @@ namespace SimpleSerialPort
         {
             SerialPort sp = (SerialPort)sender;
             int readCount = sp.BytesToRead;
+            int rxBufferCount = 0;
 
             for (int i = 0; i < readCount; i++)
             {
                 rxBuffer[rxBufferCount++] = Convert.ToByte(sp.ReadByte());
             }
 
-            string indata = Encoding.Default.GetString(rxBuffer, 0, (int) rxBufferCount);
-            string color = "darkgreen";
+            string indata;
+            if(hexOutput())
+                indata = BitConverter.ToString(rxBuffer, 0, rxBufferCount);
+            else
+                indata = Encoding.Default.GetString(rxBuffer, 0, (int) rxBufferCount);
+
+            string color = "blue"; //TODO: Add customization and dark mode
 
             RichTextBoxDelegate(indata, color);
 
-            if (saveLog)
+            if (saveLog())
             {
                 saveReceived(indata);
             }
           
         }
+        private string GetDelimiter()
+        {
+            string checkedText = settingWindow.optsGroup.Children.OfType<RadioButton>()
+                                      .FirstOrDefault(r => r.IsChecked == true)?.Content.ToString();
+            switch (checkedText)
+            {
+                case "Append Nothing":
+                    return "";
+                case "Append CR":
+                    return "\r";
+                case "Append LF":
+                    return "\n";
+                case "Append CR-LF":
+                    return "\r\n";
+            }
+
+            return "";
+        }
+
+        private bool encodeB64()
+        {
+            return Dispatcher.Invoke(() => settingWindow.b64check.IsChecked == true);
+        }
+
+        private bool saveLog()
+        {
+            return Dispatcher.Invoke(() => !((LogPath = settingWindow.logpath.Text) == "") );
+        }
+
+        private bool localEcho()
+        {
+            return Dispatcher.Invoke(() => settingWindow.echocheck.IsChecked == true);
+        }
+
+        private bool hexOutput()
+        {
+            return Dispatcher.Invoke(() => settingWindow.hexcheck.IsChecked == true);
+        }
 
         public void OnDebugTX(object sender, RoutedEventArgs e)
         {
-            string delimiter = "\n";
+            string delimiter = GetDelimiter();
             string cmd = txBox.Text + delimiter;
             byte[] bytes = Encoding.ASCII.GetBytes(cmd);
 
             if (bytes.Length > 0)
             {
-                LogInfo("You: " + cmd);
+                if(localEcho())
+                    LogInfo("You: " + cmd);
 
                 try
                 {
@@ -126,7 +168,7 @@ namespace SimpleSerialPort
                 }
                 catch
                 {
-                    LogError("Could not send command\n");
+                    LogError( (delimiter == "" ? '\n' : "") + "Could not send command\n");
                 }
 
                 txBox.Text = "";
@@ -235,7 +277,7 @@ namespace SimpleSerialPort
             else
                 return;
 
-            if (encodeB64)
+            if (encodeB64())
             {
                 string encoded = Convert.ToBase64String(fileData);
                 toSend = Encoding.UTF8.GetBytes(encoded);
@@ -260,6 +302,9 @@ namespace SimpleSerialPort
         {
             Dispatcher.Invoke(() =>
             {
+                if (str[str.Length - 1] != '\n' || str[str.Length - 1] != '\r') 
+                    str += "\n";
+
                 rxBox.AppendText("[" + DateTime.Now.ToString("h:mm:ss") + "] " + str, color);
 
                 if(enableScroll)
