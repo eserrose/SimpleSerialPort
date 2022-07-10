@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.IO.Ports;
 using System.Linq;
 using System.Text;
@@ -23,13 +24,75 @@ namespace SimpleSerialPort
         MainWindow mainwin = ((MainWindow)Application.Current.MainWindow);
         private SerialPort ThePort = ((MainWindow)Application.Current.MainWindow).ThePort;
 
+        readonly private string iniFilePath = AppDomain.CurrentDomain.BaseDirectory + "/ssp.ini";
+
         public SettingWindow()
         {
             InitializeComponent();
-            //TODO: Create a ini file and receive data from there.
+            LoadConfig();
+        }
+
+        private void LoadConfig()
+        {
+            string[] config;
+
+            if (!File.Exists(iniFilePath))
+            {
+                saveCurrentConfig();
+                return;
+            }
+
+            using (StreamReader sr = File.OpenText(iniFilePath))
+            {
+                config = File.ReadAllLines(iniFilePath);
+            }
+
+            RefreshPorts();
+
+            if (PortBox.Items.Contains(config[0]))
+                PortBox.Text = config[0];
+
+            BaudBox.Text = config[1]; 
+            DatabitsBox.Text = config[2];
+            ParityBox.Text = config[3];
+            StopbitsBox.Text = config[4];
+            HandshakeBox.Text = config[5];
+
+            optsGroup.Children.OfType<RadioButton>().FirstOrDefault(radio => radio.Content.ToString() == config[6]).IsChecked = true;
+
+            foreach (var (box,i) in optsGroup.Children.OfType<CheckBox>().Select((box, i) => (box, i)))
+            {
+                if(config[i + 7] == "1")
+                {
+                    box.IsChecked = true;
+                }
+            }
+
+        }
+
+        private string getCurrentConfig()
+        {
+            string config = PortBox.Text + "\n" + BaudBox.Text + "\n" + DatabitsBox.Text + "\n" + ParityBox.Text + "\n" + StopbitsBox.Text + "\n" + HandshakeBox.Text + "\n";
+            config += optsGroup.Children.OfType<RadioButton>().FirstOrDefault(r => r.IsChecked == true)?.Content.ToString() + "\n";
+            config += string.Join("\n", optsGroup.Children.OfType<CheckBox>().Select(box => (box.IsChecked == true ? "1" : "0")));
+
+            return config;
+        }
+
+        private void saveCurrentConfig()
+        {
+            using (StreamWriter sw = File.CreateText(iniFilePath))
+            {
+                sw.Write(getCurrentConfig());
+            }
         }
 
         public void RefreshPorts(object sender, RoutedEventArgs e)
+        {
+            RefreshPorts();
+        }
+
+        public void RefreshPorts()
         {
             PortBox.Items.Clear();                              //Clears existing ports
             string[] portNames = SerialPort.GetPortNames();     // Reads all available comPorts
@@ -50,6 +113,13 @@ namespace SimpleSerialPort
             {
                 mainwin.DebugConnectBtn.IsEnabled = true;
             }
+
+            if(monospacecheck.IsChecked == true)
+            {
+                mainwin.rxBox.FontFamily = new FontFamily("Courier New");
+            }
+
+            saveCurrentConfig();
 
             this.Close();
         }
@@ -75,6 +145,12 @@ namespace SimpleSerialPort
         {
             if(logpath.Text == "")
                 logpath.IsEnabled = false;
+        }
+
+        protected override void OnDeactivated(EventArgs e)
+        {
+            base.OnDeactivated(e);
+            this.Topmost = (ontopcheck.IsChecked == true);
         }
 
     }

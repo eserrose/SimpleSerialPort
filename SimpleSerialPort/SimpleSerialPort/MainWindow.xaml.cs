@@ -76,6 +76,9 @@ namespace SimpleSerialPort
 
         private void Settings_Click(object sender, RoutedEventArgs e)
         {
+            if (settingWindow != null && PresentationSource.FromVisual(settingWindow) != null)
+                return;
+               
             settingWindow = new SettingWindow();
             settingWindow.Show();
         }
@@ -113,7 +116,7 @@ namespace SimpleSerialPort
         }
         private string GetDelimiter()
         {
-            string checkedText = settingWindow.optsGroup.Children.OfType<RadioButton>()
+            string checkedText = settingWindow?.optsGroup.Children.OfType<RadioButton>()
                                       .FirstOrDefault(r => r.IsChecked == true)?.Content.ToString();
             switch (checkedText)
             {
@@ -127,7 +130,7 @@ namespace SimpleSerialPort
                     return "\r\n";
             }
 
-            return "";
+            return "\n";
         }
 
         private bool encodeB64()
@@ -142,12 +145,12 @@ namespace SimpleSerialPort
 
         private bool localEcho()
         {
-            return Dispatcher.Invoke(() => settingWindow.echocheck.IsChecked == true);
+            return Dispatcher.Invoke(() => settingWindow?.echocheck.IsChecked == true);
         }
 
         private bool hexOutput()
         {
-            return Dispatcher.Invoke(() => settingWindow.hexcheck.IsChecked == true);
+            return Dispatcher.Invoke(() => settingWindow?.hexcheck.IsChecked == true);
         }
 
         public void OnDebugTX(object sender, RoutedEventArgs e)
@@ -281,7 +284,8 @@ namespace SimpleSerialPort
             {
                 string encoded = Convert.ToBase64String(fileData);
                 toSend = Encoding.UTF8.GetBytes(encoded);
-            } else
+            } 
+            else
             {
                 toSend = fileData;
             }
@@ -295,7 +299,6 @@ namespace SimpleSerialPort
                 MessageBox.Show("Could not send file.");
 
             }
-
         }
 
         private void RichTextBoxDelegate(string str, string color)
@@ -335,6 +338,18 @@ namespace SimpleSerialPort
             foreach (var b in ba)
                 hex.AppendFormat("{0:X2} ", b);
             return hex.ToString();
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+            Application.Current.Shutdown();
+        }
+
+        protected override void OnDeactivated(EventArgs e)
+        {
+            base.OnDeactivated(e);
+            this.Topmost = (settingWindow?.ontopcheck.IsChecked == true);
         }
     }
 }
